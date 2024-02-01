@@ -28,5 +28,13 @@ var/graphhopper/default-gh/edges: $(VAR_DIR)/graphhopper/$(OSM_FILE)
 
 rebuild-graph: init var/graphhopper/default-gh/edges
 
-docker-up-detached:
+# Pull all images or only the containers specified by SERVICE (e.g. `make docker-pull SERVICE=graphhopper`)
+.PHONY: docker-pull
+docker-pull:
+	$(DOCKER_COMPOSE) pull $(SERVICE)
+
+# Start containers in background (or recreate containers while they are running attached to another terminal). Supports starting or
+# restarting by SERVICE (e.g. `make docker-up-detached SERVICE=graphhopper`)
+.PHONY: docker-up-detached
+docker-up-detached: init
 	$(DOCKER_COMPOSE) up -d

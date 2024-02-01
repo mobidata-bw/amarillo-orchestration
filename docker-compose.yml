@@ -5,7 +5,7 @@ services:
     image: ghcr.io/mfdz/amarillo:main
     env_file: ./.env.local
     ports:
-      - "8000:80"
+      - "8080:80"
     environment:
       TZ: Europe/Berlin
     volumes:

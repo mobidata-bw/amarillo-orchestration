@@ -6,6 +6,8 @@ VAR_DIR = var
 .PHONY: init
 init:
 	mkdir -p var/graphhopper
+	mkdir -p var/amarillo/data/agencyconf
+	mkdir -p var/amarillo/stops
 	touch .env.local
 
 # Download stops to be used to snap origin/destination to and use as potential changes
@@ -26,6 +28,8 @@ var/graphhopper/default-gh/edges: $(VAR_DIR)/graphhopper/$(OSM_FILE)
 	# re/start the service as appropriate
 	$(DOCKER_COMPOSE) restart graphhopper || $(DOCKER_COMPOSE) up -d graphhopper
 
+# Rebuild graphhopper graph
+.PHONY: rebuild-graph
 rebuild-graph: init var/graphhopper/default-gh/edges
 
 # Pull all images or only the containers specified by SERVICE (e.g. `make docker-pull SERVICE=graphhopper`)

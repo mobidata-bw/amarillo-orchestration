@@ -11,6 +11,7 @@ services:
     volumes:
       - ./etc/amarillo/conf/:/app/conf/
       - ./etc/amarillo/conf/config:/app/config
+      - ./etc/amarillo/templates/:/app/templates/
       - ./var/amarillo/data/:/app/data/
       - ./var/amarillo/stops/:/app/stops/
 

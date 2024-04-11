@@ -31,4 +31,119 @@
         Der Quellcode ist unter AGPL-Lizenz in diesem <a href="https://github.com/mfdz/amarillo">Github-Repository</a> einseh- und abrufbar.
     </p>
 
+    <h2>Technische Anforderungen an Mitfahrplattformen</h2>
+    <h3>Generelle Informationen</h3>
+    <p>
+        Wichtig für den Erfolg einer Mitfahrplattform sind mehrere Faktoren:
+    </p>
+    <p>
+        Idealerweise sollte die Mitfahrplattform es selbst schaffen, eine kritische Masse an Inseraten im Einsatzgebiet bereitzustellen, so dass Inserierende auf ihre Angebote auch Nachfragen erhalten und Suchende passende und aktuelle Angebote finden.
+    </p>
+    <p>
+        Weitere Aspekte sind einfache und intuitive Bedienbarkeit, Berücksichtigung der Präferenzen von Nutzenden etc.
+    </p>
+    <p>
+        Um die Wahrscheinlichkeit erfolgreicher Vermittlungen von Anbietenden und Suchenden zu erhöhen, bietet das Land Baden-Württemberg mit der Plattform amarillo.mobidata-bw.de eine Lösung an, über die Mitfahrangebote einer Mitfahrplattform in weitere Auskunftsanwendungen integriert und intermodal mit dem ÖPNV verknüpft werden können. So können z.B. auch Fahrten, die nur eine Teilstrecke der gesuchten Verbindung abdecken, z.B. mit Bus und Bahn kombiniert und der bestgeeignete Zustiegs-/Ausstiegsort ermittelt werden.
+        Voraussetzung dafür ist, dass die Mitfahrplattform nicht nur als geschlossene Plattform ihren eigenen registrierten Nutzern die Suche nach Inseraten ermöglicht, sondern diese Inserate, in pseudonymisierter Form, der zentralen Vernetzungskomponente Amarillo bereitstellt. 
+    </p>
+    <p>
+        Um eine Mitfahrplattform bzw. die Inserate aus einer Mitfahrplattform in Amarillo integrieren zu können, muss diese die folgenden technischen Voraussetzungen erfüllen:
+    </p>
+    <h3>Schnittstelle zum periodischen (z.B. einmal täglich) Abruf von Mitfahrangeboten</h3>
+    <p>
+        Die Mitfahrplattform muss eine Schnittstelle anbieten, die die folgenden Anforderungen erfüllt:
+    <ul>
+    <li>Zu einem Mitfahrangebot muss die Schnittstelle mindestens bereitstellen:
+    <ul>
+    <li>Name und Koordinate des Start- und Zielorts. Die Koordinate bevorzugt in WGS84, alternativ UTM-Projektion.</li>
+    <li>Für einmalig stattfindende Fahrten: Abfahrtsdatum und -uhrzeit</li>
+    <li>Für regelmäßig stattfindende Fahrten: Abfahrtszeit und Wochentage, an denen die Fahrt angeboten wird</li>
+    <li>veröffentlichbarer Deeplink, über den Interessenten per Web oder App weiterer Informationen zum Angebot erhalten können (z.B. Kontaktdaten oder Kontaktaufnahme mit Fahrtanbietenden). Sollte zur Kontaktaufnahme eine Registrierung der Interessenten erforderlich sein, sollten Basisinformationen eines Inserats nach Möglichkeit auch ohne vorherige Registrierung angezeigt werden.</li>
+    <li>Zeitpunkt der letzten Aktualisierung des Inserats (nur aktuelle Angebote werden veröffentlicht)</li>
+    <li>Eine stabile ID (numerisch/alphanumerisch), anhand der das Inserat über mehrere Abrufe hinweg identifiziert werden kann</li>
+    </ul>
+    </li>
+    <li>Die Schnittstelle sollte Parameter anbieten, nach denen abgefragte Fahrten räumlich filterbar sind (z.B. Start oder Ziel innerhalb Baden-Württembergs)</li>
+    <li>Die Schnittstelle sollte als Antwortformat bevorzugt JSON, alternativ XML, bereitstellen.</li>
+    </ul>
+    </p>
+    <p>
+        Integrationsaufwände auf Seiten von Amarillo lassen sich minimieren, wenn die bereitgestellte Schnittstelle das folgende Antwort-Format liefert:
+    <pre>
+<code>{
+    "data": [
+        {
+            "id": "1234",
+            "agency": "mfdz",
+            "deeplink": "http://mfdz.de/offer/1234",
+            "stops": [
+                {
+                    "id": "de:12073:900340137::2",
+                    "name": "ABC",
+                    "lat": 45,
+                    "lon": 9
+               },
+               {
+                   "id": "de:12073:900340137::3",
+                   "name": "XYZ",
+                   "lat": 45,
+                   "lon": 9
+               }
+            ],
+            "departureTime": "12:34",
+            "departureDate": "2022-03-30",
+            "lastUpdated": "2022-03-30T12:34:00+00:00Z"
+        },
+        {
+            "id": "1235",
+            "agency": "mfdz",
+            "deeplink": "http://mfdz.de/offer/1235",
+            "stops": [
+                {
+                    "id": "de:12073:900340137::2", "name": "ABC", 
+                    "lat": 45, "lon": 9
+                },
+                {
+                    "id": "de:12073:900340137::3", "name": "XYZ", 
+                    "lat": 45, "lon": 9
+                }
+            ],
+            "departureTime": "12:34",
+            "departureDate": [
+          	"saturday"
+            ],
+            "lastUpdated": "2022-03-30T12:34:00+00:00"
+        },
+        ...
+    ]
+}</code>
+    </pre>
+        Details zum Schema finden sich unter <a href="/docs">https://amarillo.mobidata-bw.de/docs</a>.
+    </p>
+    <h3>Schnittstelle zur spontanen Veröffentlichung/Aktualisierung von Mitfahrangeboten</h3>
+    <p>
+        Die Mitfahrplattform sollte eine Schnittstelle anbieten, die die folgenden Anforderungen erfüllt:
+    <ul>
+    <li>Bei Neu-Anlage, Änderungen eines Mitfahrangebots ruft die Mitfahrplattform den https:/amarillo.mobidata-bw.de/carpool/ POST-Endpunkt mit den gemäß <a href="/docs">https://amarillo.mobidata-bw.de/docs</a> geforderten Angaben auf, insbesondere:
+    <ul>
+    <li>Name und Koordinate des Start- und Zielorts. Die Koordinate in WGS84.</li>
+    <li>Für einmalig stattfindende Fahrten: Abfahrtsdatum und -uhrzeit</li>
+    <li>Für regelmäßig stattfindende Fahrten: Abfahrtszeit und Wochentage, an denen die Fahrt angeboten wird</li>
+    <li>veröffentlichbarer Deeplink, über den Interessenten per Web oder App weiterer Informationen zum Angebot erhalten können (z.B. Kontaktdaten oder Kontaktaufnahme mit Fahrtanbietenden)</li>
+    <li>Zeitpunkt der letzten Aktualisierung des Inserats (nur aktuelle Angebote werden veröffentlicht)</li>
+    <li>Eine stabile ID (numerisch/alphanumerisch), anhand der das Inserat über mehrere Abrufe hinweg identifiziert werden kann</li>
+    </ul>
+    </li>
+    <li>Bei Löschung eines Inserats ruft die Mitfahrplattform den https:/amarillo.mobidata-bw.de/carpool/{agency_id}/{carpool_id} DELETE-Endpunkt auf.</li>
+    </ul>
+        Setzt eine Mitfahrplattform diese Schnittstelle zur spontanen Veröffentlichung/Aktualisierung von Mitfahrangeboten nicht um, so werden Inserate nicht zeitnah nach dem Einstellen in die Plattform über Amarillo veröffentlicht, sondern erst nächtlich.
+    </p>
+    <h3>Welche Angebote sollen übermittelt werden?</h3>
+    <p>
+        Übermittelt werden sollten ausschließlich Mitfahrangebote, deren Start- oder Zielort sich in Baden-Württemberg befindet und deren Erstellung bzw. letzte Aktualisierung/Bestätigung maximal 180 Tage zurückliegt.
+    </p>
+    <p>
+        Bei Interesse an einer Integration der Mitfahrangebote Ihrer Mitfahrplattform in den gebündelten Datensatz „Mitfahrangebote“ Baden-Württemberg nehmen Sie gerne Kontakt mit uns auf, um den hierfür notwendigen API-Key zu erhalten. Schreiben Sie hierfür an mobidata-bw@nvbw.de.
+    </p>
+
 {% endblock %}

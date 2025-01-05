@@ -2,7 +2,7 @@ name: amarillo
 
 services:
   amarillo:
-    image: ghcr.io/mfdz/amarillo:main
+    image: ${AMARILLO_IMAGE}
     env_file: ./.env.local
     ports:
       - "8080:80"
@@ -16,7 +16,7 @@ services:
       - ./var/amarillo/stops/:/app/stops/
 
   graphhopper:
-    image: israelhikingmap/graphhopper:8.0
+    image: ${GRAPHHOPPER_IMAGE}
     ports:
       - "8989:8989"
     command: --host 0.0.0.0

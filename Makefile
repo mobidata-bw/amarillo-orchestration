@@ -9,6 +9,7 @@ VAR_DIR = var
 init:
 	mkdir -p var/graphhopper
 	mkdir -p var/amarillo/data/agencyconf
+	mkdir -p var/amarillo-test/data/agencyconf
 	mkdir -p var/amarillo/stops
 	touch .env.local
 

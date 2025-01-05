@@ -15,6 +15,22 @@ services:
       - ./var/amarillo/data/:/app/data/
       - ./var/amarillo/stops/:/app/stops/
 
+  amarillo-test:
+    image: ${AMARILLO_TEST_IMAGE:-${AMARILLO_IMAGE}}
+    env_file: ./.env.local
+    ports:
+      - "8085:80"
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      # Config is currently shared between amarillo and amarillo-test
+      - ./etc/amarillo/conf/:/app/conf/
+      - ./etc/amarillo/conf/config:/app/config
+      - ./etc/amarillo/templates/:/app/templates/
+      - ./var/amarillo/stops/:/app/stops/
+      # Custom folders for amarillo test
+      - ./var/amarillo-test/data/:/app/data/
+      
   graphhopper:
     image: ${GRAPHHOPPER_IMAGE}
     ports:

@@ -44,6 +44,18 @@ docker-pull:
 ## restarting by SERVICE (e.g. `make docker-up-detached SERVICE=graphhopper`)
 docker-up-detached: init
 	$(DOCKER_COMPOSE) up -d
+
+.PHONY: docker-down
+## Stops and removes all or only the containers specified by SERVICE (e.g. `make docker-down SERVICE=graphhopper`)
+docker-down:
+	$(DOCKER_COMPOSE) down $(SERVICE)
+
+.PHONY: show-todays-offers
+## Lists todays offers (from amarillo's and amarilo-test's data/carpool folder)
+show-todays-offers:
+	grep -rl "\"lastUpdated\":\"`date '+%Y-%m-%d'`" var/amarillo/data/carpool | sort
+	grep -rl "\"lastUpdated\":\"`date '+%Y-%m-%d'`" var/amarillo-test/data/carpool | sort
+
 # See <https://gist.github.com/klmr/575726c7e05d8780505a> for explanation.
 .PHONY: show-help
 show-help:

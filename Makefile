@@ -3,6 +3,8 @@
 DOCKER_COMPOSE = docker compose --env-file .env --env-file .env.local
 VAR_DIR = var
 
+.DEFAULT_GOAL := show-help
+
 .PHONY: init
 init:
 	mkdir -p var/graphhopper
@@ -10,8 +12,8 @@ init:
 	mkdir -p var/amarillo/stops
 	touch .env.local
 
-# Download stops to be used to snap origin/destination to and use as potential changes
 .PHONY: stops
+## Download stops to be used to snap origin/destination to and use as potential changes
 stops:
 	wget -O $(VAR_DIR)/amarillo/stops/stops_zhv.csv https://data.mfdz.de/mfdz/stops/stops_zhv.csv
 	wget -O $(VAR_DIR)/amarillo/stops/parkings_osm.csv https://data.mfdz.de/mfdz/stops/parkings_osm.csv
@@ -28,17 +30,21 @@ var/graphhopper/default-gh/edges: $(VAR_DIR)/graphhopper/$(OSM_FILE)
 	# re/start the service as appropriate
 	$(DOCKER_COMPOSE) restart graphhopper || $(DOCKER_COMPOSE) up -d graphhopper
 
-# Rebuild graphhopper graph
 .PHONY: rebuild-graph
+## Rebuild graphhopper graph
 rebuild-graph: init var/graphhopper/default-gh/edges
 
-# Pull all images or only the containers specified by SERVICE (e.g. `make docker-pull SERVICE=graphhopper`)
 .PHONY: docker-pull
+## Pull all images or only the containers specified by SERVICE (e.g. `make docker-pull SERVICE=graphhopper`)
 docker-pull:
 	$(DOCKER_COMPOSE) pull $(SERVICE)
 
-# Start containers in background (or recreate containers while they are running attached to another terminal). Supports starting or
-# restarting by SERVICE (e.g. `make docker-up-detached SERVICE=graphhopper`)
 .PHONY: docker-up-detached
+## Start containers in background (or recreate containers while they are running attached to another terminal). Supports starting or
+## restarting by SERVICE (e.g. `make docker-up-detached SERVICE=graphhopper`)
 docker-up-detached: init
 	$(DOCKER_COMPOSE) up -d
+# See <https://gist.github.com/klmr/575726c7e05d8780505a> for explanation.
+.PHONY: show-help
+show-help:
+	@echo "$$(tput setaf 2)Available rules:$$(tput sgr0)";sed -ne"/^## /{h;s/.*//;:d" -e"H;n;s/^## /---/;td" -e"s/:.*//;G;s/\\n## /===/;s/\\n//g;p;}" ${MAKEFILE_LIST}|awk -F === -v n=$$(tput cols) -v i=4 -v a="$$(tput setaf 6)" -v z="$$(tput sgr0)" '{printf"- %s%s%s\n",a,$$1,z;m=split($$2,w,"---");l=n-i;for(j=1;j<=m;j++){l-=length(w[j])+1;if(l<= 0){l=n-i-length(w[j])-1;}printf"%*s%s\n",-i," ",w[j];}}'

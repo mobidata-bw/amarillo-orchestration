@@ -14,6 +14,7 @@ services:
       - ./etc/amarillo/templates/:/app/templates/
       - ./var/amarillo/data/:/app/data/
       - ./var/amarillo/stops/:/app/stops/
+    restart: unless-stopped
 
   amarillo-test:
     image: ${AMARILLO_TEST_IMAGE:-${AMARILLO_IMAGE}}
@@ -30,6 +31,7 @@ services:
       - ./var/amarillo/stops/:/app/stops/
       # Custom folders for amarillo test
       - ./var/amarillo-test/data/:/app/data/
+    restart: unless-stopped
       
   graphhopper:
     image: ${GRAPHHOPPER_IMAGE}
@@ -40,3 +42,5 @@ services:
       - JAVA_OPTS=-Xmx4g
     volumes:
       - ./var/graphhopper:/data
+    restart: unless-stopped
+

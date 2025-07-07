@@ -1,43 +1,38 @@
 name: amarillo
 
-x-amarillo-defaults: &amarillo-defaults
-  env_file: ./.env.local
-  environment:
+services:
+  amarillo:
+    image: ${AMARILLO_IMAGE}
+    env_file: ./.env.local
+    ports:
+      - "8080:8000"
+    environment:
       TZ: Europe/Berlin
-  restart: unless-stopped
-  depends_on:
-    graphhopper:
-      condition: service_healthy
-  healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-      start_period: 60s
-      start_interval: 5s    
-  volumes:
+    volumes:
+      - ./etc/amarillo/conf/:/app/conf/
+      - ./etc/amarillo/conf/config:/app/config
+      - ./etc/amarillo/templates/:/app/templates/
+      - ./var/amarillo/data/:/app/data/
+      - ./var/amarillo/stops/:/app/stops/
+    restart: unless-stopped
+
+  amarillo-test:
+    image: ${AMARILLO_TEST_IMAGE:-${AMARILLO_IMAGE}}
+    env_file: ./.env.local
+    ports:
+      - "8085:8000"
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      # Config is currently shared between amarillo and amarillo-test
       - ./etc/amarillo/conf/:/app/conf/
       - ./etc/amarillo/conf/config:/app/config
       - ./etc/amarillo/templates/:/app/templates/
       - ./var/amarillo/stops/:/app/stops/
-      
-services:
-  amarillo:
-    <<: *amarillo-defaults
-    image: ${AMARILLO_IMAGE}
-    ports:
-      - "8080:8000"
-    volumes:
-      - ./var/amarillo/data/:/app/data/
-      
-  amarillo-test:
-    <<: *amarillo-defaults
-    image: ${AMARILLO_TEST_IMAGE:-${AMARILLO_IMAGE}}
-    ports:
-      - "8085:8000"
-    volumes:
+      # Custom folders for amarillo test
       - ./var/amarillo-test/data/:/app/data/
-    
+    restart: unless-stopped
+      
   graphhopper:
     image: ${GRAPHHOPPER_IMAGE}
     ports:

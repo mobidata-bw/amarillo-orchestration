@@ -1,9 +1,9 @@
 {
   "id": "mycarpoolapp",
   "name": "MyCarpoolApp",
-  "url": "https://www.michael-obach.de/",
+  "url": "https://mycarpoolapp.com/",
   "timezone": "Europe/Berlin",
   "lang": "de",
   "email": "web@mycarpoolapp.com",
-  "privacy_url": "https://www.michael-obach.de/privacy.php"
+  "privacy_url": "https://mycarpoolapp.com/privacy.php"
 }

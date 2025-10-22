@@ -1,4 +1,10 @@
 [
     {"url": "stops/stops_zhv.csv", "vicinity": 50},
-    {"url": "stops/parkings_osm.csv", "vicinity": 500}
+    {"url": "stops/stops_alsace.csv", "vicinity": 50},
+    {"url": "stops/stops_austria.csv", "vicinity": 50},
+    {"url": "stops/stops_ch.csv", "vicinity": 50},
+    {"url": "stops/parkings_osm.csv", "vicinity": 500},
+    {"url": "stops/switzerland_parkings_osm.csv", "vicinity": 500},
+    {"url": "stops/austria_parkings_osm.csv", "vicinity": 500},
+    {"url": "stops/alsace_parkings_osm.csv", "vicinity": 500}
 ]

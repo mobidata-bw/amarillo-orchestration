@@ -16,7 +16,13 @@ init:
 ## Download stops to be used to snap origin/destination to and use as potential changes
 stops:
 	wget -O var/amarillo/stops/stops_zhv.csv https://data.mfdz.de/mfdz/stops/stops_zhv.csv
+	wget -O var/amarillo/stops/stops_alsace.csv https://data.mfdz.de/mfdz/stops/stops_alsace.csv
+	wget -O var/amarillo/stops/stops_austria.csv https://data.mfdz.de/mfdz/stops/stops_austria.csv
+	wget -O var/amarillo/stops/stops_ch.csv https://data.mfdz.de/mfdz/stops/stops_ch.csv
 	wget -O var/amarillo/stops/parkings_osm.csv https://data.mfdz.de/mfdz/stops/parkings_osm.csv
+	wget -O var/amarillo/stops/alsace_parkings_osm.csv https://data.mfdz.de/mfdz/stops/alsace_parkings_osm.csv
+	wget -O var/amarillo/stops/austria_parkings_osm.csv https://data.mfdz.de/mfdz/stops/austria_parkings_osm.csv
+	wget -O var/amarillo/stops/switzerland_parkings_osm.csv https://data.mfdz.de/mfdz/stops/switzerland_parkings_osm.csv
 
 # Download osm file to be used as input for the graphhopper routing graph
 var/graphhopper/$(OSM_FILE):

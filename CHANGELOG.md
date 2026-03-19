@@ -5,3 +5,4 @@ The changelog lists most feature changes between each release. Search GitHub iss
 ## Upcoming release
 - chore: add agency config for pendlerportal
 - chore: add agency config for matchrider
+- chore: add agency config for mifaz
